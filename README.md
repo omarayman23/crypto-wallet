@@ -34,3 +34,5 @@ A full-stack cryptocurrency paper trading platform that lets users practice trad
 - Docker + Docker Compose
 - Nginx reverse proxy
 - Multi-stage builds for optimization
+
+### ISSUES: I deployed this with Render to have a cloud and be able to remember users, however, Database will be deleted Nov 27th unless I subscribe. Currently looking for a way to be able to deploy this for free as other cloud providers all cost money.
