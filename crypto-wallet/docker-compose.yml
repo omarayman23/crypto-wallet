@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: crypto_wallet_db
+    environment:
+      POSTGRES_USER: cryptowallet
+      POSTGRES_PASSWORD: iAMtheGOAT
+      POSTGRES_DB: cryptowallet
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cryptowallet"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: crypto_wallet_api
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: postgresql://cryptowallet:iAMtheGOAT@postgres:5432/cryptowallet
+      JWT_SECRET: asksmkde3871hejIJHBHDJSMKkinjdnmakjcdhj
+      PORT: 3001
+      NODE_ENV: development
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: crypto_wallet_ui
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
